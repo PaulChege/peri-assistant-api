@@ -28,7 +28,7 @@ class StudentsController < ApplicationController
   # DELETE /students/:id
   def destroy
     @student.destroy
-    head :no_content
+    json_response(current_user.students)
   end
 
   private
