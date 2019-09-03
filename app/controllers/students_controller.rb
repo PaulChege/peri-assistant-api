@@ -9,7 +9,6 @@ class StudentsController < ApplicationController
 
   # POST /students
   def create
-    puts student_params
     @student = current_user.students.create!(student_params)
     json_response(@student, :created)
   end
@@ -21,8 +20,14 @@ class StudentsController < ApplicationController
 
   # PUT /students/:id
   def update
-    @student.update(todo_params)
-    head :no_content
+    @student.assign_attributes(student_params)
+    if @student.valid? 
+      @student.save!
+      json_response(current_user.students)
+    else
+      response = { message: @student.errors.full_messages.join(',')}
+      json_response(response, :error)
+    end
   end
 
   # DELETE /students/:id
@@ -35,7 +40,7 @@ class StudentsController < ApplicationController
 
   def student_params
     # whitelist params
-    params.permit(:name, :institution, :mobile_number)
+    params.require(:student).permit(:id, :name, :institution, :mobile_number)
   end
 
   def set_student

@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   # Model associations
   has_many :students
+
+  has_many :lessons, through: :students
   # Validations
   validates_presence_of :name, :email, :password_digest
   validates :email, uniqueness: true
