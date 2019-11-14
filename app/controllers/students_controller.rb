@@ -36,11 +36,16 @@ class StudentsController < ApplicationController
     json_response(current_user.students)
   end
 
+  def all_instruments
+    json_response(Student.all_instruments.sort)
+  end
+
   private
 
   def student_params
     # whitelist params
-    params.require(:student).permit(:id, :name, :institution, :mobile_number)
+    params.require(:student).permit(:id, :name, :email, :institution, 
+    :instrument, :start_date, :lesson_day, :lesson_time, :goals, :mobile_number)
   end
 
   def set_student

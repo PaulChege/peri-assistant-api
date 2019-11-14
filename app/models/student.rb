@@ -21,4 +21,10 @@ class Student < ApplicationRecord
   belongs_to :user
   has_many :lessons
   validates_presence_of :name, :institution, :instrument, :mobile_number
+
+
+  def self.all_instruments
+    ["Violin", "Piano", "Viola", "Cello", "Percussion", "Double Bass",
+  "Flute", "Clarinet","Oboe", "Bassoon","Tuba","Trombone","Trumpet","French Horn"]
+  end
 end
