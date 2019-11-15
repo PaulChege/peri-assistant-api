@@ -6,4 +6,6 @@ Rails.application.routes.draw do
   end
   post 'auth/login', to: 'authentication#authenticate'
   post 'signup', to: 'users#create'
+  get 'instruments', to: 'students#all_instruments'
+
 end
