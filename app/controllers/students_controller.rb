@@ -9,8 +9,14 @@ class StudentsController < ApplicationController
 
   # POST /students
   def create
-    @student = current_user.students.create!(student_params)
-    json_response(@student, :created)
+    @student = current_user.students.new(student_params)
+    if @student.valid?
+      @student.save!
+      json_response(@student, :created)
+    else
+      response= {message: @student.errors.full_messages}
+      json_response(response, 422)
+    end
   end
 
   # GET /students/:id
@@ -26,7 +32,7 @@ class StudentsController < ApplicationController
       json_response(current_user.students)
     else
       response = { message: @student.errors.full_messages.join(',')}
-      json_response(response, :error)
+      json_response(response, 422)
     end
   end
 
