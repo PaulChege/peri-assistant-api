@@ -9,7 +9,7 @@
 #  start_date    :date
 #  institution   :string
 #  mobile_number :string
-#  lesson_day    :string
+#  lesson_day    :integer
 #  lesson_time   :time
 #  goals         :text
 #  user_id       :integer

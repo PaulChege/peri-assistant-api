@@ -1,6 +1,6 @@
 class LessonsController < ApplicationController
   before_action :set_student
-  before_action :set_lesson, only: [:update, :destroy]
+  before_action :set_lesson, only: [:update, :destroy, :show]
 
   def index
     @lessons = @student.lessons
@@ -8,8 +8,18 @@ class LessonsController < ApplicationController
   end
 
   def create
-    @lesson = @student.lessons.create!(lesson_params)
-    json_response(@lesson, :created)
+    @lesson = @student.lessons.new(lesson_params)
+    if @lesson.valid?
+      @lesson.save!
+      json_response(@lesson, :created)
+    else
+      response = {message: @lesson.errors.full_messages.join(',')}
+      json_response(response, :unprocessable_entity)
+    end
+  end
+
+  def show
+    json_response(@lesson)
   end
 
   def update
@@ -19,18 +29,21 @@ class LessonsController < ApplicationController
       json_response(@lesson)
     else
       response = { message: @lesson.errors.full_messages.join(',')}
-      json_response(response, :error)
+      json_response(response, :unprocessable_entity)
     end
   end
 
   def destroy
     @lesson.destroy
-    json_response(@student.lessons)
+    response = {message: "Lesson succesfully deleted."}
+    json_response(response)
   end
 
   private
     def lesson_params
-      params.require(:lesson).permit(:time, :duration)
+      params.require(:lesson).permit(
+        :day, :time, :duration, :plan, :status, :charge, :paid
+      )
     end
 
     def set_student

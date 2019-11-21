@@ -9,7 +9,7 @@
 #  start_date    :date
 #  institution   :string
 #  mobile_number :string
-#  lesson_day    :string
+#  lesson_day    :integer
 #  lesson_time   :time
 #  goals         :text
 #  user_id       :integer
@@ -22,9 +22,12 @@ class Student < ApplicationRecord
   has_many :lessons
   validates_presence_of :name, :institution, :instrument, :mobile_number
 
+  enum day: %w(Monday Tuesday Wednesday Thursday Friday Saturday Sunday)
 
   def self.all_instruments
-    ["Violin", "Piano", "Viola", "Cello", "Percussion", "Double Bass",
-  "Flute", "Clarinet","Oboe", "Bassoon","Tuba","Trombone","Trumpet","French Horn"]
+    ["Violin", "Piano", "Viola", 
+      "Cello", "Percussion", "Double Bass",
+  "Flute", "Clarinet","Oboe", "Bassoon","Tuba",
+  "Trombone","Trumpet","French Horn"]
   end
 end

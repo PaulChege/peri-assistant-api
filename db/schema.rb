@@ -14,8 +14,13 @@ ActiveRecord::Schema.define(version: 20190903070332) do
 
   create_table "lessons", force: :cascade do |t|
     t.integer  "student_id"
-    t.datetime "time"
+    t.integer  "day"
+    t.time     "time"
     t.integer  "duration"
+    t.text     "plan"
+    t.integer  "status"
+    t.integer  "charge"
+    t.boolean  "paid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["student_id"], name: "index_lessons_on_student_id"
@@ -28,7 +33,7 @@ ActiveRecord::Schema.define(version: 20190903070332) do
     t.date     "start_date"
     t.string   "institution"
     t.string   "mobile_number"
-    t.string   "lesson_day"
+    t.integer  "lesson_day"
     t.time     "lesson_time"
     t.text     "goals"
     t.integer  "user_id"
