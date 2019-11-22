@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   skip_before_action :authorize_request, only: :create
 
@@ -8,14 +10,14 @@ class UsersController < ApplicationController
     if user.valid?
       user.save!
       authUser = AuthenticateUser.new(user.email, user.password).call
-      response = { 
-        message: Message.account_created, 
+      response = {
+        message: Message.account_created,
         user: user,
         token: authUser[:token]
       }
       json_response(response)
     else
-      response = { message: user.errors.full_messages.join(',')}
+      response = { message: user.errors.full_messages.join(',') }
       json_response(response, 422)
     end
   end
@@ -30,5 +32,4 @@ class UsersController < ApplicationController
       :password_confirmation
     )
   end
-
 end

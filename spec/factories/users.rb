@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -10,10 +12,10 @@
 #  updated_at      :datetime         not null
 #
 
-FactoryBot.define do 
-    factory :user do
-        name {Faker::Name.name}
-        email {'foo@foo.com'}
-        password {'foobar'}
-    end
+FactoryBot.define do
+  factory :user do
+    name { Faker::Name.name }
+    email { 'foo@foo.com' }
+    password { 'foobar' }
+  end
 end

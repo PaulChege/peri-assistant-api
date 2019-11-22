@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: lessons
@@ -19,6 +21,6 @@ class Lesson < ApplicationRecord
   belongs_to :student
   validates :day, :time, :duration, presence: :true
 
-  enum day: %w(Monday Tuesday Wednesday Thursday Friday Saturday Sunday)
-  enum status: [:attended, :cancelled, :missed]
+  enum day: %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
+  enum status: %i[attended cancelled missed]
 end

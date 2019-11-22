@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :update, :destroy]
+  before_action :set_student, only: %i[show update destroy]
 
   def index
     @students = current_user.students
@@ -12,7 +14,7 @@ class StudentsController < ApplicationController
       @student.save!
       json_response(@student, :created)
     else
-      response= {message: @student.errors.full_messages}
+      response = { message: @student.errors.full_messages }
       json_response(response, :unprocessable_entity)
     end
   end
@@ -23,18 +25,18 @@ class StudentsController < ApplicationController
 
   def update
     @student.assign_attributes(student_params)
-    if @student.valid? 
+    if @student.valid?
       @student.save!
       json_response(@student)
     else
-      response = { message: @student.errors.full_messages.join(',')}
+      response = { message: @student.errors.full_messages.join(',') }
       json_response(response, :unprocessable_entity)
     end
   end
 
   def destroy
     @student.destroy
-    response = {message: "Student succesfully deleted."}
+    response = { message: 'Student succesfully deleted.' }
     json_response(response)
   end
 
@@ -46,8 +48,8 @@ class StudentsController < ApplicationController
 
   def student_params
     # whitelist params
-    params.require(:student).permit(:id, :name, :email, :institution, 
-    :instrument, :start_date, :lesson_day, :lesson_time, :goals, :mobile_number)
+    params.require(:student).permit(:id, :name, :email, :institution,
+                                    :instrument, :start_date, :lesson_day, :lesson_time, :goals, :mobile_number)
   end
 
   def set_student

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: students
@@ -17,12 +19,12 @@
 #  updated_at    :datetime         not null
 #
 
-FactoryBot.define do 
-    factory :student do
-        name { Faker::Lorem.word }
-        institution { Faker::Lorem.word }
-        instrument { Faker::Lorem.word }
-        mobile_number { Faker::Lorem.word }
-        user_id { Faker::Number.number(10) }
-    end
+FactoryBot.define do
+  factory :student do
+    name { Faker::Lorem.word }
+    institution { Faker::Lorem.word }
+    instrument { Faker::Lorem.word }
+    mobile_number { Faker::Lorem.word }
+    user_id { Faker::Number.number(10) }
+  end
 end
