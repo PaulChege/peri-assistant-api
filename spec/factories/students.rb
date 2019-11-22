@@ -25,6 +25,6 @@ FactoryBot.define do
     institution { Faker::Lorem.word }
     instrument { Faker::Lorem.word }
     mobile_number { Faker::Lorem.word }
-    user_id { Faker::Number.number(10) }
+    user_id { Faker::Number.number(digits: 2) }
   end
 end

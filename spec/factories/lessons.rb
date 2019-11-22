@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :lesson do
     day { 'Monday' }
     time { '12:00' }
-    duration { Faker::Number.number(2) }
-    student_id { Faker::Number.number(10) }
+    duration { Faker::Number.number(digits: 2) }
+    student_id { Faker::Number.number(digits: 2) }
   end
 end
