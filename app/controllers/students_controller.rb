@@ -48,8 +48,10 @@ class StudentsController < ApplicationController
 
   def student_params
     # whitelist params
-    params.require(:student).permit(:id, :name, :email, :institution,
-                                    :instrument, :start_date, :lesson_day, :lesson_time, :goals, :mobile_number)
+    params.require(:student)
+      .permit(:id, :name, :email, :institution,
+              :instrument, :start_date, :lesson_day, 
+              :lesson_time, :goals, :mobile_number, :date_of_birth)
   end
 
   def set_student

@@ -9,6 +9,7 @@ class CreateStudents < ActiveRecord::Migration[5.0]
       t.date :start_date
       t.string :institution
       t.string :mobile_number
+      t.date :date_of_birth
       t.integer :lesson_day
       t.time :lesson_time
       t.text :goals
