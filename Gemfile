@@ -53,3 +53,5 @@ gem 'jwt'
 gem 'rb-readline'
 
 gem 'rubocop', require: false
+
+gem "rack-cors"
