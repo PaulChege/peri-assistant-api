@@ -17,7 +17,7 @@ class UsersController < ApplicationController
       }
       json_response(response)
     else
-      response = { message: user.errors.full_messages.join(',') }
+      response = { message: user.errors.full_messages.join(", ") }
       json_response(response, 422)
     end
   end
