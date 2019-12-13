@@ -50,10 +50,10 @@ class LessonsController < ApplicationController
   end
 
   def set_student
-    @student = Student.find(params[:student_id])
+    @student = current_user.students.find(params[:student_id])
   end
 
   def set_lesson
-    @lesson = Lesson.find(params[:id])
+    @lesson = @student.lessons.find(params[:id])
   end
 end
