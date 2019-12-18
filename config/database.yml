@@ -25,5 +25,4 @@ test:
   database: peri-assistant-api_test
 
 production:
-  <<: *default
-  database: peri-assistant-api_production
+  url: <%= ENV["DATABASE_URL"] %>
