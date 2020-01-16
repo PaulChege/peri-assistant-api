@@ -18,6 +18,8 @@ class LessonsController < ApplicationController
       response = { message: @lesson.errors.full_messages.join(',') }
       json_response(response, :unprocessable_entity)
     end
+    rescue ActionController::ParameterMissing => e
+      json_response({message: "Kindly fill in lesson details"}, :unprocessable_entity)
   end
 
   def show
