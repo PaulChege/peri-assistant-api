@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190903070332) do
+ActiveRecord::Schema.define(version: 20200116112936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "lessons", force: :cascade do |t|
     t.integer  "student_id"
-    t.integer  "day"
     t.time     "time"
     t.integer  "duration"
     t.text     "plan"
@@ -26,6 +25,7 @@ ActiveRecord::Schema.define(version: 20190903070332) do
     t.boolean  "paid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date     "day"
     t.index ["student_id"], name: "index_lessons_on_student_id", using: :btree
   end
 
