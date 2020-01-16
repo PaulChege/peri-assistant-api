@@ -14,12 +14,11 @@ class StudentsController < ApplicationController
       @student.save!
       json_response(@student, :created)
     else
-      response = { message: @student.errors.full_messages.join(", ") }
+      response = { message: @student.errors.full_messages.join(', ') }
       json_response(response, :unprocessable_entity)
     end
-
-    rescue ActionController::ParameterMissing => e
-      json_response({message: "Kindly fill in student details"}, :unprocessable_entity)
+  rescue ActionController::ParameterMissing => e
+    json_response({ message: 'Kindly fill in student details' }, :unprocessable_entity)
   end
 
   def show
