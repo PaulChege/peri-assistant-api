@@ -53,7 +53,8 @@ class StudentsController < ApplicationController
     params.require(:student)
           .permit(:id, :name, :email, :institution,
                   :instrument, :start_date, :lesson_day,
-                  :lesson_time, :goals, :mobile_number, :date_of_birth)
+                  :lesson_time, :lesson_duration, :lesson_charge,
+                  :goals, :mobile_number, :date_of_birth)
   end
 
   def set_student

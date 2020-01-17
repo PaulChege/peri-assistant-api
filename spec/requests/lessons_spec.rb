@@ -50,7 +50,7 @@ RSpec.describe 'Lessons API', type: :request do
     context 'when valid request' do
       before do
         put "/students/#{student.id}/lessons/#{lessons.first.id}",
-            params: { day: 'Tuesday' }.to_json, headers: headers
+            params: { time: '13:45' }.to_json, headers: headers
       end
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
@@ -81,7 +81,7 @@ RSpec.describe 'Lessons API', type: :request do
 
   def lesson_params
     { lesson: {
-      day: 'Monday',
+      day: Date.today,
       time: '12:30',
       duration: 30
     } }.to_json
