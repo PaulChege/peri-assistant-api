@@ -5,7 +5,7 @@ class LessonsController < ApplicationController
   before_action :set_lesson, only: %i[update destroy show]
 
   def index
-    @lessons = @student.lessons.order(day: :desc)
+    @lessons = @student.lessons.order(day: :asc)
     json_response(@lessons)
   end
 
