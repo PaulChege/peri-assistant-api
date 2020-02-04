@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :students do
     resources :lessons
   end
+  resources :users, only: [:update, :destroy]
   post 'auth/login', to: 'authentication#authenticate'
   post 'signup', to: 'users#create'
   get 'instruments', to: 'students#all_instruments'
