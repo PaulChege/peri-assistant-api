@@ -2,10 +2,11 @@
 
 class UsersController < ApplicationController
   skip_before_action :authorize_request, only: :create
-  before_action :get_user, except: :create
 
-  # POST /signup
-  # return authenticated token upon signup
+  def show
+    json_response(current_user)
+  end
+  
   def create
     user = User.new(user_params)
     if user.valid?
@@ -24,27 +25,23 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.assign_attributes(user_params)
-    if @user.valid?
-      @user.save!
-      json_response(@user)
+    current_user.assign_attributes(user_params)
+    if current_user.valid?
+      current_user.save!
+      json_response(current_user)
     else
-      response = { message: @user.errors.full_messages.join(', ') }
+      response = { message: current_user.errors.full_messages.join(', ') }
       json_response(response, 422)
     end
   end
 
   def destroy
-    @user.delete
+    current_user.destroy
     response = { message: 'Account succesfully deleted.' }
     json_response(response)
   end
 
   private
-
-  def get_user
-    @user = User.find(params[:id])
-  end
 
   def user_params
     params.require(:user).permit(

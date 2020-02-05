@@ -5,7 +5,17 @@ RSpec.describe 'Users API', type: :request do
   let(:user) { create(:user) }
   let(:headers) { valid_headers.except('Authorization') }
   
-  # User signup test suite
+
+  describe "GET /user" do
+    before do
+      get "/user", headers: headers
+    end
+
+    it "gets a user's details" do
+      expect(response).to have_http_status(200)
+    end
+  end
+
   describe 'POST /signup' do
     context 'when valid request' do
       before { post '/signup', params: user_params, headers: headers }
@@ -42,10 +52,10 @@ RSpec.describe 'Users API', type: :request do
     let(:headers) { valid_headers }
 
     # User update test suite
-    describe 'PUT /users/:id' do
+    describe 'PUT /user' do
       context 'when valid request' do
         before do 
-           put "/users/#{user.id}", params: {user: {name: "Jane"}}.to_json, headers: headers 
+           put "/user", params: {user: {name: "Jane"}}.to_json, headers: headers 
         end
   
         it 'updates user details' do
@@ -55,7 +65,7 @@ RSpec.describe 'Users API', type: :request do
       end
   
       context 'when invalid request' do
-        before { put "/users/#{user.id}", params: {user: {name: ""}}.to_json, headers: headers }
+        before { put "/user", params: {user: {name: ""}}.to_json, headers: headers }
   
         it 'does not update user detailsxs' do
           expect(response).to have_http_status(422)
@@ -71,10 +81,10 @@ RSpec.describe 'Users API', type: :request do
 
     describe "DELETE /users/:id" do
       before do
-        delete "/users/#{user.id}", headers: headers
+        delete "/user", headers: headers
       end
 
-      it "deletes a user" do
+      it "deletes a user's account" do
         expect(response).to have_http_status(200)
       end
     end
