@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_secure_password
 
   # Model associations
-  has_many :students
+  has_many :students, dependent: :delete_all
 
   has_many :lessons, through: :students
   # Validations

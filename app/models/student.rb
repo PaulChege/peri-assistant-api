@@ -24,7 +24,7 @@
 
 class Student < ApplicationRecord
   belongs_to :user
-  has_many :lessons
+  has_many :lessons, dependent: :delete_all
   validates_presence_of :name, :institution, :instrument, :mobile_number
 
   enum day: %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
