@@ -55,3 +55,6 @@ gem 'rb-readline'
 gem 'rubocop', require: false
 
 gem 'rack-cors'
+
+gem "omniauth-google-oauth2", "~> 0.2.1"
+
