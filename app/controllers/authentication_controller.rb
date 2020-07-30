@@ -1,23 +1,24 @@
 # frozen_string_literal: true
 require 'json'
 class AuthenticationController < ApplicationController
-  include HTTParty
 
-  skip_before_action :authorize_request, :authenticate_google
+  skip_before_action :authorize_request
 
   def authenticate_google      
-    user = User.where(email: params[:email])
+    user = User.find_by(email: params[:email])
+ 
     if user.present? && user.google_id.present?
       render json: {
         token: JsonWebToken.encode(user_id: user.id),
         user: user
       }
-    elsif user.present? && !user.google_id.present?
+    elsif user.present? && user.google_id.nil?
       raise(ExceptionHandler::AuthenticationError, Message.invalid_credentials)
-    elsif !user.present?
+    elsif user.nil?
       user = User.new(
+        name: params[:name],
         email: params[:email], 
-        password: SecureRandom.random_number(100000..999999), 
+        password: SecureRandom.random_number(100000..999999).to_s, 
         google_id: params[:google_id],
         google_photo_url: params[:image_url]
       )
@@ -27,7 +28,7 @@ class AuthenticationController < ApplicationController
           user: user
         }
       else
-        raise(ExceptionHandler::AuthenticationError, Message.invalid_credentials)
+        raise(ExceptionHandler::AuthenticationError, user.errors.full_messages.join(', '))
       end
     end
   end 

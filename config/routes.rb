@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     resources :lessons
   end
   post 'auth/login', to: 'authentication#authenticate'
-  post 'auth/request', to:'authentication#get_authorization'
+  post 'auth/login_google', to:'authentication#authenticate_google'
   post 'signup', to: 'users#create'
   get 'user', to: 'users#show'
   put 'user', to: 'users#update'
