@@ -4,7 +4,7 @@ class StudentsController < ApplicationController
   before_action :set_student, only: %i[show update destroy]
 
   def index
-    @students = current_user.students
+    @students = current_user.students.search(params[:query])
     json_response(@students)
   end
 

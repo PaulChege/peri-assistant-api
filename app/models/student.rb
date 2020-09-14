@@ -35,4 +35,8 @@ class Student < ApplicationRecord
      'Flute', 'Clarinet', 'Oboe', 'Bassoon', 'Tuba',
      'Trombone', 'Trumpet', 'French Horn']
   end
+
+  def self.search(query)
+    where("LOWER(name) LIKE '%#{query}%' OR LOWER(instrument) LIKE '%#{query}%' OR LOWER(mobile_number) LIKE '%#{query}%'")
+  end
 end
