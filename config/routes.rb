@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   resources :students do
+    post :send_payment_reminders
     resources :lessons
   end
   post 'auth/login', to: 'authentication#authenticate'

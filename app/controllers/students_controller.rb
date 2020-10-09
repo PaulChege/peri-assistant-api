@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
-  before_action :set_student, only: %i[show update destroy]
+  before_action :set_student, only: %i[show update destroy send_payment_reminders]
 
   def index
     @students = current_user.students.search(params[:query])
@@ -46,6 +46,16 @@ class StudentsController < ApplicationController
     json_response(Student.all_instruments.sort)
   end
 
+  def send_payment_reminders
+    # Respond with error message if student has no unpaid lessons
+    unpaid_lessons = @student.lessons.order('day ASC, time ASC').where(paid: false)
+    unpaid_lessons_text = unpaid_lessons.map{|l| "#{l.day.strftime("%B %d, %Y")} at #{l.time.strftime("%I:%M")} -> #{l.charge}"}.join(',')
+    message = "Hello, please make payments for the following lessons:\n\n#{unpaid_lessons_text}\nTOTAL = #{unpaid_lessons.sum(:charge)}\n\nThank you, #{@current_user.name}."
+    puts message
+
+    # SEND USING AT
+  end
+
   private
 
   def student_params
@@ -58,6 +68,6 @@ class StudentsController < ApplicationController
   end
 
   def set_student
-    @student = current_user.students.find(params[:id])
+    @student = current_user.students.find(params[:id] || params[:student_id])
   end
 end
