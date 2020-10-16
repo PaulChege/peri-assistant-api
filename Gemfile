@@ -34,6 +34,7 @@ group :development, :test do
   gem 'faker'
   gem 'rspec-rails', '~> 3.5'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'dotenv-rails'
 end
 
 group :development do
@@ -56,5 +57,6 @@ gem 'rubocop', require: false
 
 gem 'rack-cors'
 
-gem "omniauth-google-oauth2", "~> 0.2.1"
+gem 'africastalking-ruby', '~> 2.1.6'
+
 

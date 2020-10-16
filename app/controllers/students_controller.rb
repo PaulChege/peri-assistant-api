@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require "AfricasTalking"
 
 class StudentsController < ApplicationController
   before_action :set_student, only: %i[show update destroy send_payment_reminders]
@@ -47,13 +48,17 @@ class StudentsController < ApplicationController
   end
 
   def send_payment_reminders
-    # Respond with error message if student has no unpaid lessons
     unpaid_lessons = @student.lessons.order('day ASC, time ASC').where(paid: false)
+    if unpaid_lessons.empty?
+      json_response({message: 'Student has no unpaid lessons'})
+      return
+    end
     unpaid_lessons_text = unpaid_lessons.map{|l| "#{l.day.strftime("%B %d, %Y")} at #{l.time.strftime("%I:%M")} -> #{l.charge}"}.join(',')
     message = "Hello, please make payments for the following lessons:\n\n#{unpaid_lessons_text}\nTOTAL = #{unpaid_lessons.sum(:charge)}\n\nThank you, #{@current_user.name}."
-    puts message
-
-    # SEND USING AT
+    SmsService.new(@student.mobile_number, message).send_sms
+    json_response({message: 'Reminders sent'}, :ok)
+  rescue AfricasTalking::AfricasTalkingException, StandardError => ex
+    json_response({message: ex}, :unprocessable_entity)
   end
 
   private
