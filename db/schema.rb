@@ -10,9 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2020_07_22_064815) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_07_141829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "institutions", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "lessons", force: :cascade do |t|
     t.integer "student_id"
@@ -33,7 +40,6 @@ ActiveRecord::Schema[8.0].define(version: 2020_07_22_064815) do
     t.string "email"
     t.string "instrument"
     t.date "start_date"
-    t.string "institution"
     t.string "mobile_number"
     t.date "date_of_birth"
     t.integer "lesson_day"
@@ -44,6 +50,8 @@ ActiveRecord::Schema[8.0].define(version: 2020_07_22_064815) do
     t.datetime "updated_at", null: false
     t.integer "lesson_duration"
     t.integer "lesson_charge"
+    t.bigint "institution_id"
+    t.index ["institution_id"], name: "index_students_on_institution_id"
     t.index ["user_id"], name: "index_students_on_user_id"
   end
 
@@ -56,4 +64,6 @@ ActiveRecord::Schema[8.0].define(version: 2020_07_22_064815) do
     t.string "google_id"
     t.string "google_photo_url"
   end
+
+  add_foreign_key "students", "institutions"
 end

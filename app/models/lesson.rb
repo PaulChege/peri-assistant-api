@@ -21,5 +21,5 @@ class Lesson < ApplicationRecord
   belongs_to :student
   validates :day, :time, :duration, presence: :true
 
-  enum status: %i[attended cancelled missed]
+  enum :status, %i[attended cancelled missed]
 end

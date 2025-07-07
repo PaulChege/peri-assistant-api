@@ -10,7 +10,10 @@ class StudentsController < ApplicationController
   end
 
   def create
-    @student = current_user.students.new(student_params)
+    institution = Institution.find_or_create_by(name: student_params[:institution])
+    @student = current_user.students.new(
+      student_params.merge(lesson_day: student_params[:lesson_day].to_i, institution_id: institution.id)
+    )
     if @student.valid?
       @student.save!
       json_response(@student, :created)

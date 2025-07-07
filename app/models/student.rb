@@ -27,7 +27,7 @@ class Student < ApplicationRecord
   has_many :lessons, dependent: :delete_all
   validates_presence_of :name, :institution, :instrument, :mobile_number
 
-  enum day: %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
+  enum :lesson_day, %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
 
   def self.all_instruments
     ['Violin', 'Piano', 'Viola',
