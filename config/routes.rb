@@ -10,4 +10,10 @@ Rails.application.routes.draw do
   put 'user', to: 'users#update'
   delete 'user', to: 'users#destroy'
   get 'instruments', to: 'students#all_instruments'
+
+  resources :institutions, only: [] do
+    collection do
+      get :search
+    end
+  end
 end

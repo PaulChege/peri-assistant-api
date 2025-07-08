@@ -10,9 +10,10 @@ class StudentsController < ApplicationController
   end
 
   def create
-    institution = Institution.find_or_create_by(name: student_params[:institution])
+    # TODO: Move student creation to a service
+    institution = Institution.find_or_create_by(name: student_params[:institution] || 'Other')
     @student = current_user.students.new(
-      student_params.merge(lesson_day: student_params[:lesson_day].to_i, institution_id: institution.id)
+      student_params.except(:institution).merge(lesson_day: student_params[:lesson_day].to_i, institution_id: institution.id)
     )
     if @student.valid?
       @student.save!

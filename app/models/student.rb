@@ -9,7 +9,7 @@
 #  email           :string
 #  instrument      :string
 #  start_date      :date
-#  institution     :string
+#  institution_id  :integer
 #  mobile_number   :string
 #  date_of_birth   :date
 #  lesson_day      :integer
@@ -25,7 +25,8 @@
 class Student < ApplicationRecord
   belongs_to :user
   has_many :lessons, dependent: :delete_all
-  validates_presence_of :name, :institution, :instrument, :mobile_number
+  belongs_to :institution
+  validates_presence_of :name, :institution_id, :instrument, :mobile_number
 
   enum :lesson_day, %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
 
