@@ -22,6 +22,7 @@ class AuthenticationController < ApplicationController
         google_id: params[:google_id],
         google_photo_url: params[:image_url]
       )
+      user.set_country_and_currency_from_ip(auth_params[:ip_address])
       if user.save
         render json: {
           token: JsonWebToken.encode(user_id: user.id),
@@ -42,7 +43,7 @@ class AuthenticationController < ApplicationController
   private
 
   def auth_params
-    params.permit(:email, :password)
+    params.permit(:email, :password, :ip_address)
   end
 
   def set_headers

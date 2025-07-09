@@ -30,7 +30,9 @@ group :development, :test do
   gem 'listen'
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mswin mswin64 mingw x64_mingw jruby  ], require: "debug/prelude"
+  # gem "debug", platforms: %i[ mswin mswin64 mingw x64_mingw jruby  ], require: "debug/prelude"
+
+  gem 'pry-rails'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -58,5 +60,7 @@ gem 'jwt'
 gem 'rb-readline'
 gem 'rack-cors'
 gem 'africastalking-ruby'
+gem 'geocoder'
+gem 'countries'
 
 

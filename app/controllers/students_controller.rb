@@ -13,7 +13,7 @@ class StudentsController < ApplicationController
     # TODO: Move student creation to a service
     institution = Institution.find_or_create_by(name: student_params[:institution] || 'Other')
     @student = current_user.students.new(
-      student_params.except(:institution).merge(lesson_day: student_params[:lesson_day].to_i, institution_id: institution.id)
+      student_params.except(:institution).merge(institution_id: institution.id)
     )
     if @student.valid?
       @student.save!
@@ -27,6 +27,7 @@ class StudentsController < ApplicationController
   end
 
   def show
+
     json_response(@student)
   end
 
@@ -71,9 +72,8 @@ class StudentsController < ApplicationController
     # whitelist params
     params.require(:student)
           .permit(:id, :name, :email, :institution,
-                  :instrument, :start_date, :lesson_day,
-                  :lesson_time, :lesson_duration, :lesson_charge,
-                  :goals, :mobile_number, :date_of_birth)
+                  :instruments, :start_date, :lesson_unit_charge,
+                  :goals, :mobile_number, :date_of_birth, schedule: [:day, :start_time, :duration])
   end
 
   def set_student

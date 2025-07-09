@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_07_141829) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_09_155626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,20 +37,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_141829) do
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.string "instrument"
+    t.string "instruments"
     t.date "start_date"
     t.string "mobile_number"
     t.date "date_of_birth"
-    t.integer "lesson_day"
-    t.time "lesson_time"
     t.text "goals"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lesson_duration"
-    t.integer "lesson_charge"
     t.bigint "institution_id"
+    t.jsonb "schedule", default: []
+    t.integer "lesson_unit_charge", default: 0
+    t.index ["email", "user_id"], name: "index_students_on_email_and_user_id", unique: true
     t.index ["institution_id"], name: "index_students_on_institution_id"
+    t.index ["mobile_number", "user_id"], name: "index_students_on_mobile_number_and_user_id", unique: true
     t.index ["user_id"], name: "index_students_on_user_id"
   end
 
@@ -62,6 +62,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_141829) do
     t.datetime "updated_at", null: false
     t.string "google_id"
     t.string "google_photo_url"
+    t.string "country"
+    t.string "currency", default: "USD"
   end
 
   add_foreign_key "students", "institutions"

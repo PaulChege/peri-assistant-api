@@ -10,6 +10,8 @@ class UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.valid?
+      ip = user_params[:ip_address]
+      user.set_country_and_currency_from_ip(ip)
       user.save!
       authUser = AuthenticateUser.new(user.email, user.password).call
       response = {
@@ -48,7 +50,8 @@ class UsersController < ApplicationController
       :name,
       :email,
       :password,
-      :password_confirmation
+      :password_confirmation,
+      :ip_address,
     )
   end
 end
