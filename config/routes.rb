@@ -1,4 +1,9 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  
+  mount Sidekiq::Web => "/sidekiq" # access it at http://localhost:3000/sidekiq
+
   resources :students do
     post :send_payment_reminders
     resources :lessons

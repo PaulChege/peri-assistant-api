@@ -5,6 +5,7 @@ class LessonsController < ApplicationController
   before_action :set_lesson, only: %i[update destroy show]
 
   def index
+    LessonGenerationService.new(@student).generate_upcoming_lessons!
     @lessons = @student.lessons.order(day: :desc)
     json_response(@lessons)
   end

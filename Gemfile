@@ -62,5 +62,6 @@ gem 'rack-cors'
 gem 'africastalking-ruby'
 gem 'geocoder'
 gem 'countries'
+gem 'sidekiq'
 
 

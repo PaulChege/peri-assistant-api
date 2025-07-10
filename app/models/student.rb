@@ -30,6 +30,7 @@ class Student < ApplicationRecord
   validates :mobile_number, format: { with: /\A\d{10}\z/, message: 'must be 10 digits' }, uniqueness: { scope: :user_id }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }, uniqueness: { scope: :user_id }
   validate :schedule_must_be_valid
+  after_update :enqueue_lesson_generation_job, if: :saved_change_to_schedule?
 
   def self.all_instruments
     %w[Violin Piano Guitar Recorder Viola Cello Percussion Double-Bass Flute Clarinet Oboe Bassoon Tuba Trombone Trumpet French Horn Saxophone Drums Voice]
@@ -54,11 +55,16 @@ class Student < ApplicationRecord
 
   def schedule_must_be_valid
     if schedule.present?
-      puts schedule.inspect
       valid = schedule.all? do |day|
         day.keys.all? { |key| %w[day start_time duration].include?(key) }
       end
       errors.add(:schedule, 'must be a valid schedule') unless valid
     end
+  end
+
+  private
+
+  def enqueue_lesson_generation_job
+    LessonGenerationJob.perform_later(self.id)
   end
 end

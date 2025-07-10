@@ -52,6 +52,8 @@ class UsersController < ApplicationController
       :password,
       :password_confirmation,
       :ip_address,
+      :country,
+      :currency
     )
   end
 end

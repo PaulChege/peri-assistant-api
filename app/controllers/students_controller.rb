@@ -27,7 +27,6 @@ class StudentsController < ApplicationController
   end
 
   def show
-
     json_response(@student)
   end
 
