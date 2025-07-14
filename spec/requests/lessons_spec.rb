@@ -37,7 +37,8 @@ RSpec.describe 'Lessons API', type: :request do
 
     context 'when invalid request' do
       before do
-        post "/students/#{student.id}/lessons/", params: { lesson: { day: 'Monday' } }.to_json,
+        # No longer testing with day param, use date_time only
+        post "/students/#{student.id}/lessons/", params: { date_time: '' }.to_json,
                                                  headers: headers
       end
       it 'return status code 422' do
@@ -49,8 +50,9 @@ RSpec.describe 'Lessons API', type: :request do
   describe 'PUT /students/{}/lessons/' do
     context 'when valid request' do
       before do
+        # No longer testing with time param, use date_time only
         put "/students/#{student.id}/lessons/#{lessons.first.id}",
-            params: { time: '13:45' }.to_json, headers: headers
+            params: { date_time: DateTime.now.change(min: 30).iso8601 }.to_json, headers: headers
       end
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
@@ -60,7 +62,7 @@ RSpec.describe 'Lessons API', type: :request do
     context 'when invalid request' do
       before do
         put "/students/#{student.id}/lessons/#{lessons.first.id}",
-            params: { day: '' }.to_json, headers: headers
+            params: { date_time: '' }.to_json, headers: headers
       end
       it 'returns status code 200' do
         expect(response).to have_http_status(422)
@@ -81,8 +83,7 @@ RSpec.describe 'Lessons API', type: :request do
 
   def lesson_params
     { lesson: {
-      day: Date.today,
-      time: '12:30',
+      date_time: DateTime.now.change(min: 30).iso8601,
       duration: 30
     } }.to_json
   end

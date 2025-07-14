@@ -1,13 +1,37 @@
 # frozen_string_literal: true
 
+require 'will_paginate/active_record'
+
 class LessonsController < ApplicationController
   before_action :set_student
   before_action :set_lesson, only: %i[update destroy show]
 
   def index
-    LessonGenerationService.new(@student).generate_upcoming_lessons!
-    @lessons = @student.lessons.order(day: :desc)
-    json_response(@lessons)
+    now = Time.now.utc
+    @past_lessons = @student.lessons.where('date_time < ?', now).order(date_time: :desc).paginate(page: params[:past_page], per_page: 10)
+    @upcoming_lessons = @student.lessons.where('date_time >= ?', now).order(date_time: :asc).paginate(page: params[:upcoming_page], per_page: 10)
+
+    json_response({
+      past_lessons: {
+        lessons: @past_lessons,
+        current_page: @past_lessons.current_page,
+        total_pages: @past_lessons.total_pages,
+        total_entries: @past_lessons.total_entries
+      },
+      upcoming_lessons: {
+        lessons: @upcoming_lessons,
+        current_page: @upcoming_lessons.current_page,
+        total_pages: @upcoming_lessons.total_pages,
+        total_entries: @upcoming_lessons.total_entries
+      },
+      metadata: {
+        currency: current_user.currency,
+        student: {
+          name: @student.name,
+          instruments: @student.instruments
+        }
+      }
+    })
   end
 
   def create
@@ -24,7 +48,16 @@ class LessonsController < ApplicationController
   end
 
   def show
-    json_response(@lesson)
+    json_response({
+      lesson: @lesson,
+      metadata: {
+        currency: current_user.currency,
+        student: {
+          name: @student.name,
+          instruments: @student.instruments
+        }
+      }
+    })
   end
 
   def update
@@ -48,7 +81,7 @@ class LessonsController < ApplicationController
 
   def lesson_params
     params.require(:lesson).permit(
-      :day, :time, :duration, :plan, :status, :charge, :paid
+      :date_time, :duration, :plan, :status, :charge, :paid
     )
   end
 

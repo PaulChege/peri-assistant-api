@@ -52,12 +52,12 @@ class StudentsController < ApplicationController
   end
 
   def send_payment_reminders
-    unpaid_lessons = @student.lessons.order('day ASC, time ASC').where(paid: false)
+    unpaid_lessons = @student.lessons.order('date_time ASC').where(paid: false)
     if unpaid_lessons.empty?
       json_response({message: 'Student has no unpaid lessons'}, :unprocessable_entity)
       return
     end
-    unpaid_lessons_text = unpaid_lessons.map{|l| "#{l.day.strftime("%B %d, %Y")} at #{l.time.strftime("%I:%M")} -> #{l.charge}"}.join(',')
+    unpaid_lessons_text = unpaid_lessons.map{|l| "#{l.date_time.strftime("%B %d, %Y at %H:%M")} -> #{l.charge}"}.join(',')
     message = "Hello, please make payments for the following lessons:\n\n#{unpaid_lessons_text}\nTOTAL = #{unpaid_lessons.sum(:charge)}\n\nThank you, #{@current_user.name}."
     SmsService.new(@student.mobile_number, message).send_sms
     json_response({message: 'Reminders sent'}, :ok)

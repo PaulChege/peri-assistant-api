@@ -308,6 +308,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    will_paginate (4.0.1)
     zeitwerk (2.7.3)
 
 PLATFORMS
@@ -337,6 +338,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   tzinfo-data
+  will_paginate
 
 BUNDLED WITH
    2.6.9

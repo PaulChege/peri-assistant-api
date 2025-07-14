@@ -63,5 +63,6 @@ gem 'africastalking-ruby'
 gem 'geocoder'
 gem 'countries'
 gem 'sidekiq'
+gem 'will_paginate'
 
 

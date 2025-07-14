@@ -28,22 +28,25 @@ class LessonGenerationService
           schedule_day = entry['day']&.downcase
           next unless weekday_map[schedule_day] == date.wday
 
-          scheduled_lessons << { day: date, time: entry['start_time'] }
+          # Combine date and time into a single DateTime
+          date_time = DateTime.parse("#{date} #{entry['start_time']}")
+          scheduled_lessons << { date_time: date_time }
 
-          # Find lesson on this day
-          lesson = @student.lessons.find_by(day: date)
+          # Find lesson on this date_time
+          lesson = @student.lessons.find_by(date_time: date_time)
           if lesson
-            # If time is different, update it
-            if lesson.time.strftime('%H:%M') != entry['start_time']
-              lesson.update(time: entry['start_time'])
-            end
+            # If duration or charge is different, update it
+            updates = {}
+            updates[:duration] = entry['duration'] if lesson.duration != entry['duration']
+            updates[:charge] = @student.lesson_unit_charge if lesson.charge != @student.lesson_unit_charge
+            lesson.update(updates) if updates.any?
           else
             # Create lesson if it doesn't exist
+            calculated_charge = (@student.lesson_unit_charge * (entry['duration'].to_f / 30.0)).round
             @student.lessons.create(
-              day: date,
-              time: entry['start_time'],
+              date_time: date_time,
               duration: entry['duration'],
-              charge: @student.lesson_unit_charge,
+              charge: calculated_charge,
               status: nil,
               paid: false
             )
@@ -52,9 +55,11 @@ class LessonGenerationService
       end
 
       # Delete lessons in this week that are not part of the schedule
-      week_lessons = @student.lessons.where(day: week_dates)
+      week_start = week_dates.first.beginning_of_day
+      week_end = week_dates.last.end_of_day
+      week_lessons = @student.lessons.where(date_time: week_start..week_end)
       week_lessons.each do |lesson|
-        unless scheduled_lessons.any? { |sl| sl[:day] == lesson.day && lesson.time.strftime('%H:%M') == sl[:time] }
+        unless scheduled_lessons.any? { |sl| sl[:date_time] == lesson.date_time }
           lesson.destroy
         end
       end

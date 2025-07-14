@@ -28,7 +28,7 @@ module PeriAssistant
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
-    config.active_record.time_zone_aware_types = %i[datetime time]
+    config.active_record.time_zone_aware_types = %i[datetime]
     config.logger = Logger.new(STDOUT)
 
 
