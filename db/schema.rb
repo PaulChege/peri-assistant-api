@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_14_145216) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_15_090608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_145216) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "date_time"
+    t.text "notes"
     t.index ["student_id"], name: "index_lessons_on_student_id"
   end
 

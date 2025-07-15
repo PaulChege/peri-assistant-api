@@ -81,7 +81,7 @@ class LessonsController < ApplicationController
 
   def lesson_params
     params.require(:lesson).permit(
-      :date_time, :duration, :plan, :status, :charge, :paid
+      :date_time, :duration, :plan, :status, :charge, :paid, :notes
     )
   end
 
