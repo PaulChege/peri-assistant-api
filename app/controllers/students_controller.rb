@@ -27,14 +27,23 @@ class StudentsController < ApplicationController
   end
 
   def show
-    json_response(@student)
+    json_response(StudentSerializer.new(@student).as_json)
   end
 
   def update
-    @student.assign_attributes(student_params)
+    # Handle institution as a name
+    if student_params[:institution].present?
+      institution = Institution.find_or_create_by(name: student_params[:institution])
+      @student.institution = institution
+    end
+
+    # Assign all other attributes except institution
+    permitted = student_params.except(:institution)
+    @student.assign_attributes(permitted)
+
     if @student.valid?
       @student.save!
-      json_response(@student)
+      json_response(StudentSerializer.new(@student.reload).as_json)
     else
       response = { message: @student.errors.full_messages.join(', ') }
       json_response(response, :unprocessable_entity)

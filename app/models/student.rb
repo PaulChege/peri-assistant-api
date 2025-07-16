@@ -30,7 +30,7 @@ class Student < ApplicationRecord
   validates :mobile_number, format: { with: /\A\d{10}\z/, message: 'must be 10 digits' }, uniqueness: { scope: :user_id }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }, uniqueness: { scope: :user_id }
   validate :schedule_must_be_valid
-  after_update :enqueue_lesson_generation_job, if: :saved_change_to_schedule?
+  after_update :enqueue_lesson_generation_job, if: :schedule_or_lesson_unit_charge_changed?
 
   def self.all_instruments
     %w[Violin Piano Guitar Recorder Viola Cello Percussion Double-Bass Flute Clarinet Oboe Bassoon Tuba Trombone Trumpet French Horn Saxophone Drums Voice]
@@ -66,5 +66,9 @@ class Student < ApplicationRecord
 
   def enqueue_lesson_generation_job
     LessonGenerationJob.perform_later(self.id)
+  end
+
+  def schedule_or_lesson_unit_charge_changed?
+    saved_change_to_schedule? || saved_change_to_lesson_unit_charge?
   end
 end

@@ -11,6 +11,13 @@ class LessonGenerationService
     schedule = @student.schedule || []
     return if schedule.empty?
 
+    # Update all future lessons with the current lesson_unit_charge
+    now = Time.now.utc
+    @student.lessons.where('date_time >= ?', now).find_each do |lesson|
+      new_charge = (@student.lesson_unit_charge * (lesson.duration.to_f / 30.0)).round
+      lesson.update(charge: new_charge)
+    end
+
     start_date = Date.today.beginning_of_week(:monday)
     end_date = start_date + 11.weeks + 6.days # 12 weeks from now, inclusive
 
@@ -30,6 +37,8 @@ class LessonGenerationService
 
           # Combine date and time into a single DateTime
           date_time = DateTime.parse("#{date} #{entry['start_time']}")
+          # Skip creation if date_time is in the past
+          next if date_time < Time.now.utc
           scheduled_lessons << { date_time: date_time }
 
           # Find lesson on this date_time
@@ -59,6 +68,7 @@ class LessonGenerationService
       week_end = week_dates.last.end_of_day
       week_lessons = @student.lessons.where(date_time: week_start..week_end)
       week_lessons.each do |lesson|
+        next if lesson.date_time < Time.now.utc
         unless scheduled_lessons.any? { |sl| sl[:date_time] == lesson.date_time }
           lesson.destroy
         end
