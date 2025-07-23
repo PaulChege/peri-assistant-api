@@ -16,6 +16,13 @@ Rails.application.routes.draw do
   delete 'user', to: 'users#destroy'
   get 'instruments', to: 'students#all_instruments'
 
+  resources :users, only: [] do
+    collection do
+      get :student_institutions
+      get :student_instruments
+    end
+  end
+
   resources :institutions, only: [] do
     collection do
       get :search

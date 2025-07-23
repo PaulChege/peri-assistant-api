@@ -43,6 +43,16 @@ class UsersController < ApplicationController
     json_response(response)
   end
 
+  def student_institutions
+    institutions = current_user.students.joins(:institution).pluck('institutions.name').uniq
+    json_response(institutions)
+  end
+
+  def student_instruments
+    instruments = current_user.students.pluck(:instruments).map { |i| i.to_s.split(',') }.flatten.map(&:strip).uniq
+    json_response(instruments)
+  end
+
   private
 
   def user_params

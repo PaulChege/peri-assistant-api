@@ -5,8 +5,18 @@ class StudentsController < ApplicationController
   before_action :set_student, only: %i[show update destroy send_payment_reminders]
 
   def index
-    @students = current_user.students.search(params[:query])
-    json_response(@students)
+    students = current_user.students
+    if params[:query].present?
+      students = students.search(params[:query])
+    else
+      if params[:instrument_filter].present?
+        students = students.where("instruments ILIKE ?", "%#{params[:instrument_filter]}%")
+      end
+      if params[:institution_filter].present?
+        students = students.joins(:institution).where(institutions: { name: params[:institution_filter] })
+      end
+    end
+    json_response(students)
   end
 
   def create

@@ -21,6 +21,8 @@
 #
 
 class Student < ApplicationRecord
+  include SearchCop
+
   belongs_to :user
   has_many :lessons, dependent: :delete_all
   belongs_to :institution
@@ -32,13 +34,13 @@ class Student < ApplicationRecord
   validate :schedule_must_be_valid
   after_update :enqueue_lesson_generation_job, if: :schedule_or_lesson_unit_charge_changed?
 
+  search_scope :search do
+    attributes :name, :email, :mobile_number, :instruments
+    attributes institution: ["institution.name"]
+  end  
+
   def self.all_instruments
     %w[Violin Piano Guitar Recorder Viola Cello Percussion Double-Bass Flute Clarinet Oboe Bassoon Tuba Trombone Trumpet French Horn Saxophone Drums Voice]
-  end
-
-  # TODO: Replace with search cop
-  def self.search(query)
-    where("LOWER(name) LIKE '%#{query}%' OR LOWER(instruments) LIKE '%#{query}%' OR LOWER(mobile_number) LIKE '%#{query}%'")
   end
 
   def instruments_must_be_valid
