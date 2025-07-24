@@ -3,7 +3,7 @@
 require 'will_paginate/active_record'
 
 class LessonsController < ApplicationController
-  before_action :set_student
+  before_action :set_student, except: [:user_lessons]
   before_action :set_lesson, only: %i[update destroy show]
 
   def index
@@ -75,6 +75,24 @@ class LessonsController < ApplicationController
     @lesson.destroy
     response = { message: 'Lesson succesfully deleted.' }
     json_response(response)
+  end
+
+  def user_lessons
+    start_date = 3.months.ago.beginning_of_day
+    end_date = 3.months.from_now.end_of_day
+    lessons = Lesson.joins(:student)
+      .where(students: { user_id: current_user.id })
+      .where('date_time >= ? AND date_time <= ?', start_date, end_date)
+      .order(:date_time)
+
+    result = lessons.map do |lesson|
+      {
+        student: { name: lesson.student.name },
+        date_time: lesson.date_time,
+        duration: lesson.duration
+      }
+    end   
+    json_response(result)
   end
 
   private

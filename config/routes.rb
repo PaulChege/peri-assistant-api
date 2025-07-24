@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     post :send_payment_reminders
     resources :lessons
   end
+  
   post 'auth/login', to: 'authentication#authenticate'
   post 'auth/login_google', to:'authentication#authenticate_google'
   post 'signup', to: 'users#create'
@@ -28,4 +29,10 @@ Rails.application.routes.draw do
       get :search
     end
   end
+
+  resources :lessons, only: [] do
+    collection do
+      get :user_lessons
+    end
+  end 
 end

@@ -29,10 +29,10 @@ class Student < ApplicationRecord
   validates_presence_of :name, :institution_id, :instruments, :mobile_number
   validate :instruments_must_be_valid
   validate :date_of_birth_must_be_in_the_past
-  validates :mobile_number, format: { with: /\A\d{10}\z/, message: 'must be 10 digits' }, uniqueness: { scope: :user_id }
+  validates :mobile_number, format: { with: /\A(\+?\d{1,4})?0?\d{9}\z/, message: 'must be a valid mobile number' }, uniqueness: { scope: :user_id }
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }, uniqueness: { scope: :user_id }
   validate :schedule_must_be_valid
-  after_update :enqueue_lesson_generation_job, if: :schedule_or_lesson_unit_charge_changed?
+  after_save :enqueue_lesson_generation_job, if: :schedule_or_lesson_unit_charge_changed?
 
   search_scope :search do
     attributes :name, :email, :mobile_number, :instruments
@@ -40,7 +40,7 @@ class Student < ApplicationRecord
   end  
 
   def self.all_instruments
-    %w[Violin Piano Guitar Recorder Viola Cello Percussion Double-Bass Flute Clarinet Oboe Bassoon Tuba Trombone Trumpet French Horn Saxophone Drums Voice]
+    %w[Violin Piano Guitar Recorder Viola Cello Percussion Double-Bass Flute Clarinet Oboe Bassoon Tuba Trombone Trumpet French Horn Saxophone Drums Voice Theory]
   end
 
   def instruments_must_be_valid
