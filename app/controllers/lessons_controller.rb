@@ -87,7 +87,8 @@ class LessonsController < ApplicationController
 
     result = lessons.map do |lesson|
       {
-        student: { name: lesson.student.name },
+        id: lesson.id,  
+        student: { id: lesson.student.id, name: lesson.student.name },
         date_time: lesson.date_time,
         duration: lesson.duration
       }
