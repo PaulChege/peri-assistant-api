@@ -1,41 +1,24 @@
 # frozen_string_literal: true
 
-require 'will_paginate/active_record'
-
 class LessonsController < ApplicationController
-  before_action :set_student, except: [:user_lessons]
+  before_action :set_student, only: [:index]
   before_action :set_lesson, only: %i[update destroy show]
 
   def index
-    now = Time.now.utc
-    @past_lessons = @student.lessons.where('date_time < ?', now).order(date_time: :desc).paginate(page: params[:past_page], per_page: 10)
-    @upcoming_lessons = @student.lessons.where('date_time >= ?', now).order(date_time: :asc).paginate(page: params[:upcoming_page], per_page: 10)
+    base = @student.nil? ? current_user : @student 
+    
+    result = LessonFilterService.new(
+      base,
+      institution_filter: params[:institution_filter],
+      past_page: params[:past_page],
+      upcoming_page: params[:upcoming_page]
+    ).call
 
-    json_response({
-      past_lessons: {
-        lessons: @past_lessons,
-        current_page: @past_lessons.current_page,
-        total_pages: @past_lessons.total_pages,
-        total_entries: @past_lessons.total_entries
-      },
-      upcoming_lessons: {
-        lessons: @upcoming_lessons,
-        current_page: @upcoming_lessons.current_page,
-        total_pages: @upcoming_lessons.total_pages,
-        total_entries: @upcoming_lessons.total_entries
-      },
-      metadata: {
-        currency: current_user.currency,
-        student: {
-          name: @student.name,
-          instruments: @student.instruments
-        }
-      }
-    })
+    json_response(result)
   end
 
   def create
-    @lesson = @student.lessons.new(lesson_params)
+    @lesson = Lesson.new(lesson_params)
     if @lesson.valid?
       @lesson.save!
       json_response(@lesson, :created)
@@ -53,8 +36,8 @@ class LessonsController < ApplicationController
       metadata: {
         currency: current_user.currency,
         student: {
-          name: @student.name,
-          instruments: @student.instruments
+          name: @lesson.student.name,
+          instruments: @lesson.student.instruments
         }
       }
     })
@@ -100,15 +83,15 @@ class LessonsController < ApplicationController
 
   def lesson_params
     params.require(:lesson).permit(
-      :date_time, :duration, :plan, :status, :charge, :paid, :notes
+      :date_time, :duration, :plan, :status, :charge, :paid, :notes, :student_id
     )
   end
 
   def set_student
-    @student = current_user.students.find(params[:student_id])
+    @student = current_user.students.find_by(id: params[:student_id])
   end
 
   def set_lesson
-    @lesson = @student.lessons.find(params[:id])
+    @lesson = Lesson.find(params[:id])
   end
 end

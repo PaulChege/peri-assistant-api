@@ -6,8 +6,9 @@ Rails.application.routes.draw do
 
   resources :students do
     post :send_payment_reminders
-    resources :lessons
   end
+
+  resources :lessons, only: [:index, :show, :update, :create, :destroy]
   
   post 'auth/login', to: 'authentication#authenticate'
   post 'auth/login_google', to:'authentication#authenticate_google'
