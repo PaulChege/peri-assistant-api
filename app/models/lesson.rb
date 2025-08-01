@@ -22,6 +22,11 @@ class Lesson < ApplicationRecord
   validates :date_time, :duration, presence: true
   
   enum :status, %i[attended cancelled missed]
+  
+  default_scope { joins(:student).where(students: { status: :active }) }
+  
+  scope :all_including_inactive_students, -> { unscoped }
+  
   validate :cannot_attend_future_lesson
   validate :no_time_conflict
 

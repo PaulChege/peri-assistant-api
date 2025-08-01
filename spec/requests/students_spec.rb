@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Students API', type: :request do
   let(:user) { create(:user) }
   let(:students) { create_list(:student, 10, user_id: user.id) }
   # authorize request
-  let(:headers) { valid_headers }
+  let(:headers) { valid_headers(user) }
 
   describe 'GET /students' do
     # update request with headers
@@ -65,6 +67,59 @@ RSpec.describe 'Students API', type: :request do
     end
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
+    end
+  end
+
+  describe 'GET /students/inactive' do
+    let(:user) { User.create(name: 'Test User', email: 'test@example.com', password: 'password') }
+    let(:headers) { { 'Authorization' => token_generator(user.id), 'Content-Type' => 'application/json' } }
+    
+    before do
+      # Create institution first
+      institution = Institution.create!(name: 'Test Institution')
+      
+      # Create test data directly
+      Student.create!(
+        name: 'Active Student',
+        email: 'active@example.com',
+        mobile_number: '1234567890',
+        instruments: 'Piano',
+        user_id: user.id,
+        institution_id: institution.id,
+        status: :active
+      )
+      Student.create!(
+        name: 'Inactive Student 1',
+        email: 'inactive1@example.com',
+        mobile_number: '1234567891',
+        instruments: 'Guitar',
+        user_id: user.id,
+        institution_id: institution.id,
+        status: :inactive
+      )
+      Student.create!(
+        name: 'Inactive Student 2',
+        email: 'inactive2@example.com',
+        mobile_number: '1234567892',
+        instruments: 'Violin',
+        user_id: user.id,
+        institution_id: institution.id,
+        status: :inactive
+      )
+    end
+
+    it 'returns status code 200' do
+      get '/students/inactive', params: {}, headers: headers
+      expect(response).to have_http_status(200)
+    end
+
+    it 'returns only inactive students with institution information' do
+      get '/students/inactive', params: {}, headers: headers
+      json_response = JSON.parse(response.body)
+      expect(json_response.length).to eq(2)
+      expect(json_response.map { |student| student['status'] }).to all(eq('inactive'))
+      expect(json_response.first['institution']).to include('name')
+      expect(json_response.first['institution']['name']).to eq('Test Institution')
     end
   end
 

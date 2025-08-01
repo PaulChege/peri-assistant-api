@@ -18,6 +18,7 @@
 #  updated_at      :datetime         not null
 #  schedule        :jsonb            default([])
 #  lesson_unit_charge :integer          default(0)
+#  status          :integer          default(0), not null
 #
 
 class Student < ApplicationRecord
@@ -33,6 +34,12 @@ class Student < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP, message: 'must be a valid email address' }, uniqueness: { scope: :user_id }
   validate :schedule_must_be_valid
   after_save :enqueue_lesson_generation_job, if: :schedule_or_lesson_unit_charge_changed?
+
+  enum :status, %i[active inactive]
+  
+  default_scope { where(status: :active) }
+  
+  scope :all_including_inactive, -> { unscoped }
 
   search_scope :search do
     attributes :name, :email, :mobile_number, :instruments

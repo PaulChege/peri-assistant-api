@@ -63,7 +63,7 @@ class LessonsController < ApplicationController
   def user_lessons
     start_date = 3.months.ago.beginning_of_day
     end_date = 3.months.from_now.end_of_day
-    lessons = Lesson.joins(:student)
+    lessons = Lesson.unscoped.joins(:student)
       .where(students: { user_id: current_user.id })
       .where('date_time >= ? AND date_time <= ?', start_date, end_date)
       .order(:date_time)
@@ -88,10 +88,10 @@ class LessonsController < ApplicationController
   end
 
   def set_student
-    @student = current_user.students.find_by(id: params[:student_id])
+    @student = current_user.students.unscoped.find_by(id: params[:student_id])
   end
 
   def set_lesson
-    @lesson = Lesson.find(params[:id])
+    @lesson = Lesson.unscoped.find(params[:id])
   end
 end

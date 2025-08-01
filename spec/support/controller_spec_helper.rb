@@ -12,7 +12,8 @@ module ControllerSpecHelper
   end
 
   # return valid headers
-  def valid_headers
+  def valid_headers(user = nil)
+    user ||= create(:user)
     {
       'Authorization' => token_generator(user.id),
       'Content-Type' => 'application/json'

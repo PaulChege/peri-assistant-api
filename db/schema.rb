@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_15_090608) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_01_165609) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_15_090608) do
     t.bigint "institution_id"
     t.jsonb "schedule", default: []
     t.integer "lesson_unit_charge", default: 0
+    t.integer "status", default: 0, null: false
     t.index ["email", "user_id"], name: "index_students_on_email_and_user_id", unique: true
     t.index ["institution_id"], name: "index_students_on_institution_id"
     t.index ["mobile_number", "user_id"], name: "index_students_on_mobile_number_and_user_id", unique: true

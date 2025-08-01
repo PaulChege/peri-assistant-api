@@ -2,7 +2,7 @@
 require "AfricasTalking"
 
 class StudentsController < ApplicationController
-  before_action :set_student, only: %i[show update destroy send_payment_reminders]
+  before_action :set_student, only: %i[show destroy send_payment_reminders]
 
   def index
     students = current_user.students
@@ -41,12 +41,12 @@ class StudentsController < ApplicationController
   end
 
   def update
+    @student = current_user.students.unscoped.find(params[:id])
     # Handle institution as a name
     if student_params[:institution].present?
       institution = Institution.find_or_create_by(name: student_params[:institution])
       @student.institution = institution
     end
-
     # Assign all other attributes except institution
     permitted = student_params.except(:institution)
     @student.assign_attributes(permitted)
@@ -70,6 +70,12 @@ class StudentsController < ApplicationController
     json_response(Student.all_instruments.sort)
   end
 
+  def inactive
+    inactive_students = current_user.students.unscoped.where(status: :inactive)
+    serialized_students = inactive_students.map { |student| StudentSerializer.new(student).as_json }
+    json_response(serialized_students)
+  end
+
   def send_payment_reminders
     unpaid_lessons = @student.lessons.order('date_time ASC').where(paid: false)
     if unpaid_lessons.empty?
@@ -91,10 +97,10 @@ class StudentsController < ApplicationController
     params.require(:student)
           .permit(:id, :name, :email, :institution,
                   :instruments, :start_date, :lesson_unit_charge,
-                  :goals, :mobile_number, :date_of_birth, schedule: [:day, :start_time, :duration])
+                  :goals, :mobile_number, :date_of_birth, :status, schedule: [:day, :start_time, :duration])
   end
 
   def set_student
-    @student = current_user.students.find(params[:id] || params[:student_id])
+    @student = current_user.students.unscoped.find(params[:id] || params[:student_id])
   end
 end

@@ -25,11 +25,11 @@
 FactoryBot.define do
   factory :student do
     name { Faker::Lorem.word }
-    institution { Faker::Lorem.word }
-    instrument { Faker::Lorem.word }
+    association :institution
+    instruments { Faker::Lorem.word }
     mobile_number { Faker::Lorem.word }
     user_id { Faker::Number.number(digits: 2) }
-    lesson_duration { 30 }
-    lesson_charge { 2000 }
+    lesson_unit_charge { 2000 }
+    status { :active }
   end
 end
