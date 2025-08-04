@@ -24,11 +24,12 @@
 
 FactoryBot.define do
   factory :student do
-    name { Faker::Lorem.word }
+    name { Faker::Name.name }
     association :institution
-    instruments { Faker::Lorem.word }
-    mobile_number { Faker::Lorem.word }
-    user_id { Faker::Number.number(digits: 2) }
+    association :user
+    instruments { "Piano" }
+    sequence(:mobile_number) { |n| "07#{n.to_s.rjust(8, '0')}" }
+    email { Faker::Internet.email }
     lesson_unit_charge { 2000 }
     status { :active }
   end

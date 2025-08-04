@@ -11,9 +11,16 @@ Rails.application.routes.draw do
     post :send_payment_reminders
   end
 
-  resources :lessons, only: [:index, :show, :update, :create, :destroy] do
+  resources :lessons, only: [:index, :update, :create, :destroy] do
     collection do
       get :user_lessons
+    end
+  end
+
+  resources :breaks, only: [:index, :show, :create, :update, :destroy] do
+    collection do
+      get :user_students
+      get :user_institutions
     end
   end
   
@@ -30,11 +37,21 @@ Rails.application.routes.draw do
       get :student_institutions
       get :student_instruments
     end
+    resources :breaks, only: [:index, :show, :create, :update, :destroy] do
+      collection do
+        get :current
+      end
+    end
   end
 
   resources :institutions, only: [] do
     collection do
       get :search
+    end
+    resources :breaks, only: [:index, :show, :create, :update, :destroy] do
+      collection do
+        get :current
+      end
     end
   end
 end

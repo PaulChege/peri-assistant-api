@@ -18,8 +18,8 @@ class User < ApplicationRecord
 
   # Model associations
   has_many :students, dependent: :delete_all
-
   has_many :lessons, through: :students, dependent: :delete_all
+  has_many :breaks, as: :breakable, dependent: :destroy
 
   # Validations
   validates_presence_of :name, :email, :password_digest

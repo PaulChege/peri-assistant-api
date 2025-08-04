@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_01_165609) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_04_163232) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "breaks", force: :cascade do |t|
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.string "breakable_type", null: false
+    t.bigint "breakable_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["breakable_type", "breakable_id"], name: "index_breaks_on_breakable"
+    t.index ["breakable_type", "breakable_id"], name: "index_breaks_on_breakable_type_and_breakable_id"
+    t.index ["end_date"], name: "index_breaks_on_end_date"
+    t.index ["start_date"], name: "index_breaks_on_start_date"
+    t.index ["user_id"], name: "index_breaks_on_user_id"
+  end
 
   create_table "institutions", force: :cascade do |t|
     t.string "name"
@@ -67,5 +82,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_01_165609) do
     t.string "currency", default: "USD"
   end
 
+  add_foreign_key "breaks", "users"
   add_foreign_key "students", "institutions"
 end

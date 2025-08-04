@@ -27,6 +27,8 @@ class Student < ApplicationRecord
   belongs_to :user
   has_many :lessons, dependent: :delete_all
   belongs_to :institution
+  has_many :breaks, as: :breakable, dependent: :destroy
+  
   validates_presence_of :name, :institution_id, :instruments, :mobile_number
   validate :instruments_must_be_valid
   validate :date_of_birth_must_be_in_the_past
