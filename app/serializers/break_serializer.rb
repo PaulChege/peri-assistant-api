@@ -18,9 +18,9 @@ class BreakSerializer
     when User
       "Myself"
     when Institution
-      @break.breakable.name
+      "Institution: #{@break.breakable.name}"
     when Student
-      @break.breakable.name
+      "Student: #{@break.breakable.name}"
     else
       "Unknown"
     end

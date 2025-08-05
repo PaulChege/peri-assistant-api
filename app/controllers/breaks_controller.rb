@@ -3,24 +3,24 @@ class BreaksController < ApplicationController
 
   def index
     breaks = Break.where(user_id: current_user.id).where('end_date > ?', Time.now)
-    render json: breaks, each_serializer: BreakSerializer
+    json_response(breaks.map { |break_record| BreakSerializer.new(break_record).as_json })
   end
 
   def create
     break_record = Break.new(break_params.merge(user_id: current_user.id))
     
     if break_record.save
-      render json: break_record, serializer: BreakSerializer, status: :created
+      json_response(break_record, :created)
     else
-      render json: { errors: break_record.errors }, status: :unprocessable_entity
+      json_response({ errors: break_record.errors }, :unprocessable_entity)
     end
   end
 
   def update
     if @break.update(break_params)
-      render json: @break, serializer: BreakSerializer
+      json_response(@break)
     else
-      render json: { errors: @break.errors }, status: :unprocessable_entity
+      json_response({ errors: @break.errors }, :unprocessable_entity)
     end
   end
 
@@ -28,13 +28,13 @@ class BreaksController < ApplicationController
     if @break.destroy
       head :no_content
     else
-      render json: { errors: @break.errors }, status: :unprocessable_entity
+      json_response({ errors: @break.errors }, :unprocessable_entity)
     end
   end
 
   def user_students
     students = current_user.students.select(:id, :name).order(:name)
-    render json: students.map { |student| { id: student.id, name: student.name } }
+    json_response(students.map { |student| { id: student.id, name: student.name } })
   end
 
   def user_institutions
@@ -42,7 +42,7 @@ class BreaksController < ApplicationController
                               .select('institutions.id, institutions.name')
                               .distinct
                               .order('institutions.name')
-    render json: institutions.map { |institution| { id: institution.id, name: institution.name } }
+    json_response(institutions.map { |institution| { id: institution.id, name: institution.name } })
   end
 
   private
