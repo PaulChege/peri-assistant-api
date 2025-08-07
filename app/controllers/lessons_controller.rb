@@ -36,6 +36,7 @@ class LessonsController < ApplicationController
       metadata: {
         currency: current_user.currency,
         student: {
+          id: @lesson.student.id,
           name: @lesson.student.name,
           instruments: @lesson.student.instruments
         }

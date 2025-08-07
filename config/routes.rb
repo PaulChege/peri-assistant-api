@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     post :send_payment_reminders
   end
 
-  resources :lessons, only: [:index, :update, :create, :destroy] do
+  resources :lessons, only: [:index, :show, :update, :create, :destroy] do
     collection do
       get :user_lessons
     end
