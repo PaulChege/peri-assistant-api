@@ -65,3 +65,5 @@ gem 'countries'
 gem 'sidekiq'
 gem 'will_paginate'
 gem 'search_cop'
+gem 'ruby_llm'
+

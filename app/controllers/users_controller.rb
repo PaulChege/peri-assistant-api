@@ -53,6 +53,11 @@ class UsersController < ApplicationController
     json_response(instruments)
   end
 
+  def students
+    students = current_user.students.select(:id, :name).order(:name)
+    json_response(students)
+  end
+
   private
 
   def user_params

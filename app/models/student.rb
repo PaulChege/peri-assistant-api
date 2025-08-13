@@ -11,7 +11,7 @@
 #  start_date      :date
 #  institution_id  :integer
 #  mobile_number   :string
-#  date_of_birth   :date
+#  date_of_birth   :date  
 #  goals           :text
 #  user_id         :integer
 #  created_at      :datetime         not null
@@ -28,6 +28,7 @@ class Student < ApplicationRecord
   has_many :lessons, dependent: :delete_all
   belongs_to :institution
   has_many :breaks, as: :breakable, dependent: :destroy
+  has_many :reports, dependent: :destroy
   
   validates_presence_of :name, :institution_id, :instruments, :mobile_number
   validate :instruments_must_be_valid

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_163232) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_13_141320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_163232) do
     t.index ["student_id"], name: "index_lessons_on_student_id"
   end
 
+  create_table "reports", force: :cascade do |t|
+    t.text "summary", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.bigint "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["end_date"], name: "index_reports_on_end_date"
+    t.index ["start_date", "end_date"], name: "index_reports_on_start_date_and_end_date"
+    t.index ["start_date"], name: "index_reports_on_start_date"
+    t.index ["student_id"], name: "index_reports_on_student_id"
+    t.check_constraint "end_date > start_date", name: "check_end_date_after_start_date"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -83,5 +97,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_163232) do
   end
 
   add_foreign_key "breaks", "users"
+  add_foreign_key "reports", "students"
   add_foreign_key "students", "institutions"
 end

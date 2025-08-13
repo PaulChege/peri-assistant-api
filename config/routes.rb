@@ -10,6 +10,12 @@ Rails.application.routes.draw do
     end
     post :send_payment_reminders
   end
+  
+  resources :reports, only: [:index, :create, :show, :update, :destroy] do
+    collection do
+      post :generate
+    end
+  end
 
   resources :lessons, only: [:index, :show, :update, :create, :destroy] do
     collection do
@@ -36,6 +42,7 @@ Rails.application.routes.draw do
     collection do
       get :student_institutions
       get :student_instruments
+      get :students
     end
     resources :breaks, only: [:index, :show, :create, :update, :destroy] do
       collection do

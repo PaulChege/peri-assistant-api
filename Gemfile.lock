@@ -105,6 +105,7 @@ GEM
     drb (2.2.3)
     erb (5.0.1)
     erubi (1.13.1)
+    event_stream_parser (1.0.0)
     factory_bot (6.5.4)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.0)
@@ -112,6 +113,16 @@ GEM
       railties (>= 6.1.0)
     faker (3.5.2)
       i18n (>= 1.8.11, < 2)
+    faraday (2.13.4)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-multipart (1.1.1)
+      multipart-post (~> 2.0)
+    faraday-net_http (3.4.1)
+      net-http (>= 0.5.0)
+    faraday-retry (2.3.2)
+      faraday (~> 2.0)
     ffi (1.17.2)
     geocoder (1.8.5)
       base64 (>= 0.1.0)
@@ -151,6 +162,9 @@ GEM
     minitest (5.25.5)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
+    multipart-post (2.4.1)
+    net-http (0.6.0)
+      uri
     net-imap (0.5.9)
       date
       net-protocol
@@ -285,6 +299,15 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
+    ruby_llm (1.6.1)
+      base64
+      event_stream_parser (~> 1)
+      faraday (>= 1.10.0)
+      faraday-multipart (>= 1)
+      faraday-net_http (>= 1)
+      faraday-retry (>= 1)
+      marcel (~> 1.0)
+      zeitwerk (~> 2)
     search_cop (1.4.0)
       treetop
     securerandom (0.4.1)
@@ -340,6 +363,7 @@ DEPENDENCIES
   rb-readline
   rspec-rails
   rubocop-rails-omakase
+  ruby_llm
   search_cop
   shoulda-matchers
   sidekiq
