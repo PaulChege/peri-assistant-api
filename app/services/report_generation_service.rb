@@ -1,7 +1,4 @@
 # frozen_string_literal: true
-
-require 'ruby_llm'
-
 class ReportGenerationService
   def initialize(student, start_date, end_date)
     @student = student
