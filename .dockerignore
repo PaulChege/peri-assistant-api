@@ -1,0 +1,35 @@
+# Ignore Git metadata
+.git
+.gitignore
+
+# Node/yarn
+node_modules
+npm-debug.log
+.yarn-cache
+
+# Bundler
+.bundle
+vendor/bundle
+
+# Logs and temp files
+log/*
+tmp/*
+!*tmp/.keep
+!log/.keep
+
+# Byproducts and caches
+coverage
+.byebug_history
+.sass-cache
+.ruby-version
+.ruby-gemset
+
+# Editor/OS files
+.DS_Store
+.idea
+.vscode
+
+# Credentials and local env
+.env
+.env.*
+config/master.key
