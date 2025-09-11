@@ -29,4 +29,9 @@ test:
   url: <%= ENV["DATABASE_URL"] %>
 
 production:
-  url: <%= ENV["DATABASE_URL"] %>
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME") %>
+  host: <%= ENV.fetch("DB_HOST") %>
+  username: <%= ENV.fetch("DB_USER") %>
+  password: <%= ENV["DB_PASSWORD"] %>
+

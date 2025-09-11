@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: peri_dev
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+    image: peri-assistant-api:dev
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/peri_dev
+      REDIS_URL: redis://redis:6379/0
+      PORT: 3001
+    command: bash -lc "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0 -p 3001"
+    volumes:
+      - .:/app
+      - bundle-cache:/usr/local/bundle
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+      - redis
+
+  sidekiq:
+    build:
+      context: .
+    image: peri-assistant-api:dev
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: development
+      RACK_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/peri_dev
+      REDIS_URL: redis://redis:6379/0
+    command: bash -lc "bundle exec sidekiq -r ./config/environment.rb"
+    volumes:
+      - .:/app
+      - bundle-cache:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  db-data:
+  bundle-cache:

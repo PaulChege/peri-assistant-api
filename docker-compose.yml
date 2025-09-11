@@ -2,62 +2,69 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: peri_dev
+    image: postgres:15
     volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - "5432"
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env
+    networks:
+      - backend
 
   redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    image: redis:7
+    networks:
+      - backend
 
-  app:
-    build:
-      context: .
-    image: peri-assistant-api:dev
-    env_file:
-      - .env
-    environment:
-      RAILS_ENV: development
-      RACK_ENV: development
-      DATABASE_URL: postgres://postgres:postgres@db:5432/peri_dev
-      REDIS_URL: redis://redis:6379/0
-      PORT: 3001
-    command: bash -lc "bundle exec rails db:prepare && bundle exec rails s -b 0.0.0.0 -p 3001"
-    volumes:
-      - .:/app
-      - bundle-cache:/usr/local/bundle
+  web:
+    image: paulchege/peri-assistant-api:latest   # <-- production image from Docker Hub
+    container_name: rails-api
+    command: bundle exec rails s -b 0.0.0.0 -p 3000
     ports:
-      - "3001:3001"
+      - "3000:3000"
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      RACK_ENV: production
+      REDIS_URL: redis://redis:6379/0
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+    networks:
+      - backend
 
   sidekiq:
-    build:
-      context: .
-    image: peri-assistant-api:dev
-    env_file:
-      - .env
-    environment:
-      RAILS_ENV: development
-      RACK_ENV: development
-      DATABASE_URL: postgres://postgres:postgres@db:5432/peri_dev
-      REDIS_URL: redis://redis:6379/0
-    command: bash -lc "bundle exec sidekiq -r ./config/environment.rb"
-    volumes:
-      - .:/app
-      - bundle-cache:/usr/local/bundle
+    image: paulchege/peri-assistant-api:latest
+    container_name: sidekiq
+    command: bundle exec sidekiq -r ./config/environment.rb
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: production
+      RACK_ENV: production
+      REDIS_URL: redis://redis:6379/0
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME} 
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+    networks:
+      - backend
 
 volumes:
-  db-data:
-  bundle-cache:
+  db_data:
+
+networks:
+  backend:
